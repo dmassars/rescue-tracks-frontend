@@ -1,4 +1,7 @@
 import { AbstractModel } from "../../abstract.model";
+
+import { AnimalMeeting } from "../meeting/animal-meeting.model";
+
 export class Animal extends AbstractModel {
     static readonly ADOPTED                       = "Healthy In Home";
     static readonly ADOPTED_AWAITING_FINALIZATION = "Adopted/Needs Finalization";
@@ -28,4 +31,10 @@ export class Animal extends AbstractModel {
     readonly size:        string;
     readonly status:      string;
     selected:             boolean;
+
+    public animalMeetings: AnimalMeeting[];
+
+    set _animalMeetings(animalMeetings: AnimalMeeting[]) {
+        this.addArray("animalMeetings", AnimalMeeting, animalMeetings);
+    }
 }

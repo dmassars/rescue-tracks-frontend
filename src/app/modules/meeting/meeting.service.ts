@@ -45,6 +45,7 @@ export class MeetingService {
 
         this.http
             .get<Animal[]>(`${this.baseUrl}/events/${eventId}/animals-for-meeting`)
+            .map(animals => _.map(animals, animal => new Animal(animal)))
             .subscribe(animals.next.bind(animals));
 
         socket.on(action, animals.next.bind(animals));
@@ -55,7 +56,7 @@ export class MeetingService {
     public getMeetingDetails(meetingId: number): Observable<Meeting> {
         return this.http.get<Meeting>(
                 `${this.baseUrl}/meetings/${meetingId}/details`
-            );
+            ).map((meeting) => new Meeting(meeting));
     }
 
     public startMeetingWithAnimal(meetingId: number, animal: Animal): Observable<Meeting> {

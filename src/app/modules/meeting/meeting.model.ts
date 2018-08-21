@@ -1,36 +1,40 @@
 import * as _ from "lodash";
+
+import { AbstractModel } from "../../abstract.model";
+
 import { Attendee, EventModel } from "../event";
 import { User } from "../authentication/user.model";
 import { Animal } from "../api";
 import { AnimalMeeting } from "./animal-meeting.model";
 
-export class Meeting {
-    public id: number;
+export class Meeting extends AbstractModel {
+    public animals: Animal[];
+    public animalMeetings: AnimalMeeting[];
+    public attendee: Attendee;
+    public event: EventModel;
+    public adoptionCounselor: User;
 
-    private __eventAttender__: any;
-    private __animalMeetings__: AnimalMeeting[];
+    set _animals(animals: Animal[]) {
+        this.addArray("animals", Animal, animals);
+    }
 
-    get animals(): Animal[] {
-        return _.map(this.animalMeetings, "animal");
+    set _animalMeetings(animalMeetings: AnimalMeeting[]) {
+        this.addArray("animalMeetings", AnimalMeeting, animalMeetings);
     }
 
     get activeAnimalMeeting(): AnimalMeeting {
         return _.find(this.animalMeetings, (meeting: AnimalMeeting) => !meeting.concludedAt);
     }
 
-    get animalMeetings(): AnimalMeeting[] {
-        return _.map(this.__animalMeetings__, (meeting) => Object.assign(new AnimalMeeting(), meeting));
+    set _attendee(attendee: Attendee) {
+        this.add("attendee", Attendee, attendee)
     }
 
-    get attendee(): Attendee {
-        return Object.assign(new Attendee(), this.__eventAttender__.__adopter__);
+    set _event(event: EventModel) {
+        this.add("event", EventModel, event)
     }
 
-    get event(): EventModel {
-        return Object.assign(new EventModel(), this.__eventAttender__.__event__);
-    }
-
-    get adoptionCounselor(): User {
-        return Object.assign(new User(), (this as any).__adoptionCounselor__);
+    set _adoptionCounselor(adoptionCounselor: User) {
+        this.add("adoptionCounselor", User, adoptionCounselor)
     }
 }

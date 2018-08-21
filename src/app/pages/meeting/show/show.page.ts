@@ -35,10 +35,11 @@ export class MeetingPage implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.paramsSub = this.route.params.subscribe(params => {
-            this.animals = this.meetingService.getEventAnimals(Number(localStorage.getItem("eventId")));
+            this.animals = this.meetingService.getEventAnimals(Number(localStorage.getItem("eventId")))
+                .map(animals => _.map(animals, (animal) => new Animal(animal)));
             this.meetingService
                 .getMeetingDetails(+params.id)
-                .map((meeting) => Object.assign(new Meeting(), meeting))
+                .map(meeting => new Meeting(meeting))
                 .subscribe(this.counselorMeeting);
         });
     }

@@ -41,11 +41,9 @@ export class EventPage implements OnInit, OnDestroy {
             localStorage.setItem("eventId", +params.id + "");
             this.eventModel = this.eventService.getEvent(+params.id).map((event: EventModel) => {
                 if(moment(event.startTime).twix(event.endTime).isCurrent()) {
-                    this.waitlist = this.eventService.getEventAttendance(+params.id)
+                    this.waitlist = this.eventService.getEventAttendance(+params.id);
                     this.myMeetings = this.eventService.getMeetingsAtEvent(+params.id)
-                        .map((meetings) => {
-                            return _.map(meetings, (meeting) => Object.assign(new Meeting(), meeting))
-                        });
+                        .map((meetings) => _.map(meetings, (meeting) => new Meeting(meeting)));
                 }
 
                 return event;

@@ -1,18 +1,23 @@
-import { Animal } from "../api";
+import { AbstractModel } from "../../abstract.model";
 
-export class AnimalMeeting {
-    public id: number;
+import { Animal } from "../api";
+import { User } from "../authentication/user.model";
+
+export class AnimalMeeting extends AbstractModel {
 
     public concludedAt: Date;
-    public createdAt: Date;
 
-    private __animal__: Animal;
+    public animal: Animal;
 
     get startedAt(): Date {
         return this.createdAt;
     }
 
-    get animal(): Animal {
-        return Object.assign(new Animal(), this.__animal__);
+    set _animal(animal: Animal) {
+        this.add("animal", Animal, animal);
+    }
+
+    set _adoptionCounselor(adoptionCounselor: User) {
+        this.add("adoptionCounselor", User, adoptionCounselor);
     }
 }

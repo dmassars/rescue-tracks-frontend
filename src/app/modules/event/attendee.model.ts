@@ -1,5 +1,6 @@
-export class Attendee {
-    id: number;
+import { AbstractModel } from "../../abstract.model";
+
+export class Attendee extends AbstractModel {
     firstName: string;
     lastName: string;
     preapproved: boolean;
