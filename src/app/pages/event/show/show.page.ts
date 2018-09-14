@@ -42,8 +42,7 @@ export class EventPage implements OnInit, OnDestroy {
             this.eventModel = this.eventService.getEvent(+params.id).map((event: EventModel) => {
                 if(moment(event.startTime).twix(event.endTime).isCurrent()) {
                     this.waitlist = this.eventService.getEventAttendance(+params.id);
-                    this.myMeetings = this.eventService.getMeetingsAtEvent(+params.id)
-                        .map((meetings) => _.map(meetings, (meeting) => new Meeting(meeting)));
+                    this.myMeetings = this.eventService.getMeetingsAtEvent(+params.id);
                 }
 
                 return event;

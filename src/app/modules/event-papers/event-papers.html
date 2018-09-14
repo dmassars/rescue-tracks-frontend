@@ -1,7 +1,0 @@
-<div class="animals">
-    <div *ngFor="let animal of animals | async" class="animal-container">
-        <input [id]="animal?.name" type="checkbox" checked />
-        <label [for]="animal?.name">{{animal?.name}}</label>
-        <event-papers-card [animal]="animal"></event-papers-card>
-    </div>
-</div>

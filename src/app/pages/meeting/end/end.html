@@ -2,7 +2,7 @@
     <div class="modal-background"></div>
     <div class="modal-card" *ngIf="meeting | async; let meeting">
         <div class="modal-card-body">
-            End {{meeting?.attendee.firstName}}'s meeting with {{meeting?.animals[0].name}}?
+            End {{meeting?.attendee.firstName}}'s meeting with {{meeting?.activeAnimalMeeting.animal.name}}?
             <br>
             Phone: {{meeting?.attendee.phoneNumber}}
             <div *ngIf="adopted">
@@ -11,7 +11,7 @@
         </div>
         <footer class="modal-card-foot field is-grouped is-grouped-right">
             <div class="control">
-                <button class="button is-large is-success" [disabled]="meetingEnded || adopted" (click)="adopt()">Adopt {{meeting?.animals[0].name}}!</button>
+                <button class="button is-large is-success" [disabled]="meetingEnded || adopted" (click)="adopt()">Adopt {{meeting?.activeAnimalMeeting.animal.name}}!</button>
                 <button class="button is-large is-primary" [disabled]="meetingEnded || adopted" (click)="endMeeting()">Yes</button>
                 <button class="button is-large is-danger" [routerLink]="['/events', eventId]">No</button>
             </div>

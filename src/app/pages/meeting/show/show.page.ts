@@ -4,9 +4,12 @@ import { DomSanitizer, SafeStyle } from "@angular/platform-browser";
 
 import { Observable, ReplaySubject, Subscription } from "rxjs";
 
+import * as _ from "lodash";
+
 import {
     Attendee,
     Animal,
+    AnimalMeeting,
     Meeting,
     EventService,
     MeetingService
@@ -35,11 +38,9 @@ export class MeetingPage implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.paramsSub = this.route.params.subscribe(params => {
-            this.animals = this.meetingService.getEventAnimals(Number(localStorage.getItem("eventId")))
-                .map(animals => _.map(animals, (animal) => new Animal(animal)));
+            this.animals = this.meetingService.getEventAnimals(Number(localStorage.getItem("eventId")));
             this.meetingService
                 .getMeetingDetails(+params.id)
-                .map(meeting => new Meeting(meeting))
                 .subscribe(this.counselorMeeting);
         });
     }
@@ -52,7 +53,7 @@ export class MeetingPage implements OnInit, OnDestroy {
         return this.sanitizer.bypassSecurityTrustStyle(`url(${url})`);
     }
 
-    meetingForAnimal(animal: Animal): Meeting {
+    meetingForAnimal(animal: Animal): AnimalMeeting {
         return this.meetingService.currentMeetingForAnimal(animal);
     }
 

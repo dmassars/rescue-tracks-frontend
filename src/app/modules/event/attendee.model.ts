@@ -1,10 +1,19 @@
 import { AbstractModel } from "../../abstract.model";
 
+import { AnimalMeeting } from "../meeting/animal-meeting.model";
+
+
 export class Attendee extends AbstractModel {
-    firstName: string;
-    lastName: string;
-    preapproved: boolean;
-    email: string;
-    phoneNumber: string;
-    startedAt: Date;
+    public firstName: string;
+    public lastName: string;
+    public preapproved: boolean;
+    public email: string;
+    public phoneNumber: string;
+    public startedAt: Date;
+
+    public animalMeetings: AnimalMeeting[];
+
+    set _animalMeetings(animalMeetings: AnimalMeeting[]) {
+        this.addArray("animalMeetings", AnimalMeeting, animalMeetings);
+    }
 }

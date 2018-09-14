@@ -7,8 +7,8 @@ export class AbstractModel {
     public createdAt: Date;
     public updatedAt: Date;
 
-
     constructor(params?: any) {
+        params = (this as any).constructor.transform(params);
         Object.assign(this,
             _.omitBy(params, (value, key) => _.startsWith(key, "__"))
         );
@@ -21,6 +21,10 @@ export class AbstractModel {
                  this[lookup] = value;
              }
          }).value();
+    }
+
+    protected static transform(params: any) {
+        return params;
     }
 
     protected addArray(key: string, klass: typeof AbstractModel, items: any[]) {

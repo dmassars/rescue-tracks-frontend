@@ -82,7 +82,8 @@ export class EventService {
     }
 
     public getMeetingsAtEvent(eventId: number): Observable<Meeting[]> {
-        return this.http.get<Meeting[]>(`events/${eventId}/meetings`);
+        return this.http.get<Meeting[]>(`events/${eventId}/meetings`)
+                   .map((meetings) => _.map(meetings, meeting => new Meeting(meeting)));
     }
 
     public compareEventsByTime(eventA: EventModel, eventB: EventModel): number {

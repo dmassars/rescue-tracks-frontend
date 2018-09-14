@@ -10,26 +10,21 @@ import { BASE_RESCUE_TRACKS_URL } from "../../constants";
 
 import { Animal } from "../api";
 import { Attendee } from "../event/attendee.model";
+import { AnimalMeeting } from "./animal-meeting.model";
 import { Meeting } from "./meeting.model";
 
 @Injectable()
 export class MeetingService {
     constructor(@Inject(BASE_RESCUE_TRACKS_URL) private baseUrl: string, private http: HttpClient) { }
 
-    public currentMeetingForAnimal(animal: Animal): Meeting {
-        if((animal as any).__animalMeetings__ && (animal as any).__animalMeetings__.length) {
-            let meeting = _.find((animal as any).__animalMeetings__, (m) => !m.concludedAt);
-            if(meeting.__personMeeting__) {
-                return Object.assign(new Meeting(), meeting.__personMeeting__, {startedAt: meeting.createdAt});
-            }
-        }
-        return undefined;
+    public currentMeetingForAnimal(animal: Animal): AnimalMeeting {
+        return _.find(animal.animalMeetings, m => (!m.concludedAt || m.adopted));
     }
 
     public getMeeting(meetingId: number): Observable<Meeting> {
         return this.http.get<Meeting>(
                 `${this.baseUrl}/meetings/${meetingId}`
-            ).map((meeting) => Object.assign(new Meeting(), meeting));
+            ).map(meeting => new Meeting(meeting));
     }
 
     public getEventAnimals(eventId: number): Observable<Animal[]> {
@@ -56,7 +51,7 @@ export class MeetingService {
     public getMeetingDetails(meetingId: number): Observable<Meeting> {
         return this.http.get<Meeting>(
                 `${this.baseUrl}/meetings/${meetingId}/details`
-            ).map((meeting) => new Meeting(meeting));
+            ).map(meeting => new Meeting(meeting));
     }
 
     public startMeetingWithAnimal(meetingId: number, animal: Animal): Observable<Meeting> {

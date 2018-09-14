@@ -2,10 +2,10 @@ import * as _ from "lodash";
 
 import { AbstractModel } from "../../abstract.model";
 
-import { Attendee, EventModel } from "../event";
-import { User } from "../authentication/user.model";
 import { Animal } from "../api";
 import { AnimalMeeting } from "./animal-meeting.model";
+import { Attendee, EventModel } from "../event";
+import { User } from "../authentication/user.model";
 
 export class Meeting extends AbstractModel {
     public animals: Animal[];
@@ -23,7 +23,7 @@ export class Meeting extends AbstractModel {
     }
 
     get activeAnimalMeeting(): AnimalMeeting {
-        return _.find(this.animalMeetings, (meeting: AnimalMeeting) => !meeting.concludedAt);
+        return _.find(this.attendee.animalMeetings, (meeting: AnimalMeeting) => !meeting.concludedAt);
     }
 
     set _attendee(attendee: Attendee) {
@@ -36,5 +36,12 @@ export class Meeting extends AbstractModel {
 
     set _adoptionCounselor(adoptionCounselor: User) {
         this.add("adoptionCounselor", User, adoptionCounselor)
+    }
+
+    protected static transform(params: any) {
+        return _.chain(params)
+                .extend({__attendee__: params.__adopter__})
+                .omit("__adopter__")
+                .value();
     }
 }

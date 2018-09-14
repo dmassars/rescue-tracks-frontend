@@ -31,7 +31,7 @@ export class ModalComponent implements OnInit {
         }
     }
 
-    closeModal($event) {
+    closeModal($event?) {
         this.isActive = false;
         if (this.isRoute) {
             this.router.navigate([{outlets: {modal: null}}]);
