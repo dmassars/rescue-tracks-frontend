@@ -2,11 +2,10 @@ import { AbstractModel } from "../../abstract.model";
 
 import { AnimalMeeting } from "../meeting/animal-meeting.model";
 
-
 export class Attendee extends AbstractModel {
     public firstName: string;
     public lastName: string;
-    public preapproved: boolean;
+    public approvalStatus: string;
     public email: string;
     public phoneNumber: string;
     public startedAt: Date;

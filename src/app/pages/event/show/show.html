@@ -2,7 +2,6 @@
     <div>
         <h2 class="title">Event #{{ event?.id }}</h2>
         <h3 class="subtitle">({{ event | formatEventDate }})</h3>
-        <!-- <div>Test {{socketTest | async}}</div> -->
         <a routerLink="animals">
             <span *ngIf="event.animals.length > 0 ; else addAnimals">{{ event.animals.length }} animals</span>
             <ng-template #addAnimals>Add animals</ng-template>
@@ -12,10 +11,10 @@
             <a *ngFor="let attendance of waitlist | async"
                 [routerLink]="['meeting', attendance.id]"
                 class="panel-block attendee">
-                    {{attendance.__adopter__.firstName}} {{attendance.__adopter__.lastName[0]}}.
+                    {{attendance.firstName}} {{attendance.lastName}}
                 <span class="time">
-                    {{attendance.createdAt | timeAgo | async}}
-                    <div *ngIf="attendance?.__adopter__.preapproved">Pre-approved</div>
+                    {{attendance.startedAt | timeAgo | async}}
+                    <div>{{attendanceOptionsDisplay(attendance.approvalStatus)}}</div>
                 </span>
             </a>
             <div class="panel-block empty" *ngIf="(waitlist | async)?.length == 0">
@@ -54,10 +53,12 @@
                 </div>
             </div>
             <div class="field">
-                <label class="label">Approved?</label>
+                <label class="label">Approval status</label>
                 <div class="field">
                     <div class="control">
-                        <input type="checkbox" name="approved" [(ngModel)]="newAttendee.preapproved" />
+                        <select name="approvalStatus" [(ngModel)]="newAttendee.approvalStatus" required>
+                            <option *ngFor="let option of attendanceOptions" [ngValue]="option.value">{{option.display}}</option>
+                        </select>
                     </div>
                 </div>
             </div>

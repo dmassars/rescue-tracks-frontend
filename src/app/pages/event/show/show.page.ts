@@ -32,6 +32,20 @@ export class EventPage implements OnInit, OnDestroy {
 
     public myMeetings: Observable<Meeting[]>;
 
+    public attendanceOptions = [{
+        value: "has_meeting",
+        display: "Approved with meeting",
+    },{
+        value: "approved",
+        display: "Approved",
+    },{
+       value: "online_application",
+       display: "Application submitted online",
+    },{
+        value: "walkup",
+        display: "Walkup"
+    }];
+
     constructor(private route: ActivatedRoute, private eventService: EventService) {
         this.newAttendee = new Attendee();
     }
@@ -42,7 +56,7 @@ export class EventPage implements OnInit, OnDestroy {
             this.eventModel = this.eventService.getEvent(+params.id).map((event: EventModel) => {
                 if(moment(event.startTime).twix(event.endTime).isCurrent()) {
                     this.waitlist = this.eventService.getEventAttendance(+params.id)
-                                        .map((meetings) => _.orderBy(meetings, "createdAt"));
+                                        .map((meetings) => _.orderBy(meetings, "startedAt"));
                     this.myMeetings = this.eventService.getMeetingsAtEvent(+params.id);
                 }
 
@@ -62,5 +76,13 @@ export class EventPage implements OnInit, OnDestroy {
                     this.newAttendee = new Attendee();
                 });
         });
+    }
+
+    attendanceOptionsDisplay(option) {
+        try {
+            return _.find(this.attendanceOptions, (opt) => opt.value == option).display;
+        } catch (e) {
+            return "Unknown";
+        }
     }
 }
