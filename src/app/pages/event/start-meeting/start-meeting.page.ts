@@ -30,7 +30,7 @@ export class StartMeetingPage implements OnInit, OnDestroy {
             this.eventId = Observable.of(+params.id);
             let attendees = JSON.parse(localStorage.getItem("eventAttendance"));
             let attendee = _.find<Attendee>(attendees, (attendee) => attendee.id == +params.attendeeId);
-            this.attendee = Observable.of(Object.assign(new Attendee(), attendee.__adopter__));
+            this.attendee = Observable.of(new Attendee(attendee));
         });
     }
 

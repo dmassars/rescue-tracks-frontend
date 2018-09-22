@@ -6,6 +6,23 @@
 }
 
 .applicants {
+    .panel-heading {
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        align-items: center;
+
+        .filter {
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: flex-end;
+
+            .label {
+                font-size: 0.6rem;
+            }
+        }
+    }
+
     .attendee {
         display: flex;
         flex-flow: row nowrap;
@@ -15,6 +32,7 @@
             padding-left: 1em;
             font-size: 0.7em;
             font-style: italic;
+            text-align: right;
         }
     }
 

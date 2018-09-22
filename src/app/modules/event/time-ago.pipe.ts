@@ -14,6 +14,10 @@ export class TimeAgoPipe implements PipeTransform {
         }
         let startTime = moment(date);
 
-        return Observable.timer(0, 10000).map(() => startTime.fromNow());
+        return Observable.timer(0, 10000).map(() => {
+            let difference = Math.round(moment.duration(moment().diff(startTime)).asMinutes());
+
+            return `${difference} minute${difference == 1 ? '' : 's'} ago`
+        });
     }
 }

@@ -32,23 +32,56 @@ export class EventPage implements OnInit, OnDestroy {
 
     public myMeetings: Observable<Meeting[]>;
 
+    public waitlistFilter: string;
+
+    public waitlistFilterObservable: ReplaySubject<string>;
+
+    public attendanceOptions = [{
+        value: "has_meeting",
+        display: "Approved with meeting",
+    },{
+        value: "approved",
+        display: "Approved",
+    },{
+       value: "online_application",
+       display: "Application submitted online",
+    },{
+        value: "walkup",
+        display: "Walkup"
+    }];
+
     constructor(private route: ActivatedRoute, private eventService: EventService) {
         this.newAttendee = new Attendee();
     }
 
     ngOnInit(): void {
+        this.waitlistFilterObservable = new ReplaySubject<string>(1);
+
         this.paramsSub = this.route.params.subscribe(params => {
             localStorage.setItem("eventId", +params.id + "");
             this.eventModel = this.eventService.getEvent(+params.id).map((event: EventModel) => {
                 if(moment(event.startTime).twix(event.endTime).isCurrent()) {
-                    this.waitlist = this.eventService.getEventAttendance(+params.id)
-                                        .map((meetings) => _.orderBy(meetings, "createdAt"));
+
+                    this.waitlist = Observable.combineLatest(
+                        this.eventService.getEventAttendance(+params.id)
+                                            .map((attendances) => _.orderBy(attendances, "startedAt")),
+                        this.waitlistFilterObservable
+                    ).map(([attendances, filter]) => {
+                        if (this.waitlistFilter == "all") {
+                            return attendances;
+                        } else {
+                            return _.filter(attendances, (attendance) => attendance.approvalStatus == this.waitlistFilter);
+                        }
+                    });
                     this.myMeetings = this.eventService.getMeetingsAtEvent(+params.id);
                 }
 
                 return event;
             });
         });
+
+        this.waitlistFilter = localStorage.getItem("waitlistFilter") || "all";
+        this.updateWaitlistFilter();
     }
 
     ngOnDestroy(): void {
@@ -62,5 +95,18 @@ export class EventPage implements OnInit, OnDestroy {
                     this.newAttendee = new Attendee();
                 });
         });
+    }
+
+    attendanceOptionsDisplay(option) {
+        try {
+            return _.find(this.attendanceOptions, (opt) => opt.value == option).display;
+        } catch (e) {
+            return "Unknown";
+        }
+    }
+
+    updateWaitlistFilter() {
+        localStorage.setItem("waitlistFilter", this.waitlistFilter);
+        this.waitlistFilterObservable.next(this.waitlistFilter);
     }
 }
