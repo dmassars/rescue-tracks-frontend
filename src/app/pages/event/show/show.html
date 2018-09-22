@@ -7,7 +7,16 @@
             <ng-template #addAnimals>Add animals</ng-template>
         </a>
         <div class="panel applicants" *ngIf="event | eventIsActive">
-            <h3 class="panel-heading">Applicants</h3>
+            <h3 class="panel-heading">
+                <span>Applicants</span>
+                <span class="filter">
+                    <div class="label">Filter by approval status</div>
+                    <select name="approvalStatus" [(ngModel)]="waitlistFilter" (change)="updateWaitlistFilter()">
+                        <option value="all">All</option>
+                        <option *ngFor="let option of attendanceOptions" [ngValue]="option.value">{{option.display}}</option>
+                    </select>
+                </span>
+            </h3>
             <a *ngFor="let attendance of waitlist | async"
                 [routerLink]="['meeting', attendance.id]"
                 class="panel-block attendee">
