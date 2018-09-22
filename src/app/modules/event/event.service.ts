@@ -53,7 +53,7 @@ export class EventService {
     }
 
     public getEventAttendance(eventId: number): Observable<Attendee[]> {
-        let transformAttendees = (attendees: Attendee[]) => _.map(attendees, (attendee: any) => new Attendee(
+        const transformAttendees = (attendees: Attendee[]) => _.map(attendees, (attendee: any) => new Attendee(
                 _.chain(attendee.__adopter__)
                  .pick(["id", "firstName", "lastName", "phoneNumber"])
                  .extend({
@@ -62,7 +62,11 @@ export class EventService {
                  }).value()
             ));
 
-        let updateAttendance = (attendees: Attendee[]) => localStorage.setItem("eventAttendance", JSON.stringify(transformAttendees(attendees)));
+        const updateAttendance = (attendees: Attendee[]) => {
+            let result = transformAttendees(attendees);
+            localStorage.setItem("eventAttendance", JSON.stringify(result));
+            return result;
+        };
 
 
         let attendance: ReplaySubject<Attendee[]> = this.socket.bindAction("event", "adopters", {event_id: eventId}, updateAttendance)
@@ -71,7 +75,7 @@ export class EventService {
             .get<Attendee[]>(`events/${eventId}/attendance`)
             .subscribe((attendees) => {
                 updateAttendance(attendees);
-                attendance.next(attendees);
+                attendance.next(transformAttendees(attendees));
             });
 
         return attendance;
