@@ -71,6 +71,16 @@
                     </div>
                 </div>
             </div>
+            <div class="field" *ngIf="newAttendee.approvalStatus == 'has_meeting'">
+                <label class="label">Meeting time</label>
+                <div class="field">
+                    <div class="control">
+                        <select name="meetingTime" [(ngModel)]="newAttendee.meetingSetup.meetingTime" required>
+                            <option *ngFor="let option of availableMeetingTimes" [ngValue]="option">{{option}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             <div class="field">
                 <label class="label">Email</label>
                 <div class="field">

@@ -15,6 +15,8 @@ import {
     EventService,
 } from "../../../modules";
 
+import { MeetingSetup } from "../../../modules/meeting";
+
 @Component({
     selector: "page-event-show",
     templateUrl: "show.html",
@@ -50,6 +52,8 @@ export class EventPage implements OnInit, OnDestroy {
         display: "Walkup"
     }];
 
+    public availableMeetingTimes: Date[];
+
     constructor(private route: ActivatedRoute, private eventService: EventService) {
         this.newAttendee = new Attendee();
     }
@@ -61,6 +65,8 @@ export class EventPage implements OnInit, OnDestroy {
             localStorage.setItem("eventId", +params.id + "");
             this.eventModel = this.eventService.getEvent(+params.id).map((event: EventModel) => {
                 if(moment(event.startTime).twix(event.endTime).isCurrent()) {
+
+                    this.generateMeetingTimes(event);
 
                     this.waitlist = Observable.combineLatest(
                         this.eventService.getEventAttendance(+params.id)
@@ -107,6 +113,29 @@ export class EventPage implements OnInit, OnDestroy {
 
     updateWaitlistFilter() {
         localStorage.setItem("waitlistFilter", this.waitlistFilter);
+
+        if (this.waitlistFilter == "has_meeting" && !this.newAttendee.meetingSetup) {
+            this.newAttendee.meetingSetup = new MeetingSetup();
+        }
+
         this.waitlistFilterObservable.next(this.waitlistFilter);
+    }
+
+    private generateMeetingTimes(event: EventModel): void {
+        if (this.availableMeetingTimes.length) {
+            return;
+        }
+
+        let startTime = moment(event.startTime).startOf("hour");
+        let endTime = moment(event.endTime);
+        this.availableMeetingTimes = [];
+
+        while (startTime.isBefore(moment(event.startTime))) {
+            startTime.add(15, "minutes");
+        }
+
+        while (startTime.isBefore(endTime)) {
+            this.availableMeetingTimes.push(startTime.add(15, "minutes").toDate());
+        }
     }
 }
