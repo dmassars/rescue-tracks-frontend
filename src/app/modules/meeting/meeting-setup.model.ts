@@ -27,6 +27,9 @@ export class MeetingSetup extends AbstractModel {
     }
 
     protected static transform(params: any) {
+        if (!params) {
+            return;
+        }
         return _.chain(params)
                 .extend({__attendee__: params.__adopter__})
                 .omit("__adopter__")

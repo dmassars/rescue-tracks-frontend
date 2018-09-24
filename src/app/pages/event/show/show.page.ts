@@ -56,6 +56,7 @@ export class EventPage implements OnInit, OnDestroy {
 
     constructor(private route: ActivatedRoute, private eventService: EventService) {
         this.newAttendee = new Attendee();
+        this.newAttendee.meetingSetup = new MeetingSetup();
     }
 
     ngOnInit(): void {
@@ -114,15 +115,11 @@ export class EventPage implements OnInit, OnDestroy {
     updateWaitlistFilter() {
         localStorage.setItem("waitlistFilter", this.waitlistFilter);
 
-        if (this.waitlistFilter == "has_meeting" && !this.newAttendee.meetingSetup) {
-            this.newAttendee.meetingSetup = new MeetingSetup();
-        }
-
         this.waitlistFilterObservable.next(this.waitlistFilter);
     }
 
     private generateMeetingTimes(event: EventModel): void {
-        if (this.availableMeetingTimes.length) {
+        if (this.availableMeetingTimes && this.availableMeetingTimes.length) {
             return;
         }
 
@@ -135,7 +132,8 @@ export class EventPage implements OnInit, OnDestroy {
         }
 
         while (startTime.isBefore(endTime)) {
-            this.availableMeetingTimes.push(startTime.add(15, "minutes").toDate());
+            this.availableMeetingTimes.push(startTime.toDate());
+            startTime.add(15, "minutes");
         }
     }
 }

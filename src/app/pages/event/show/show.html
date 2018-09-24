@@ -76,7 +76,7 @@
                 <div class="field">
                     <div class="control">
                         <select name="meetingTime" [(ngModel)]="newAttendee.meetingSetup.meetingTime" required>
-                            <option *ngFor="let option of availableMeetingTimes" [ngValue]="option">{{option}}</option>
+                            <option *ngFor="let option of availableMeetingTimes" [ngValue]="option">{{option | timeOfDay}}</option>
                         </select>
                     </div>
                 </div>
