@@ -20,7 +20,7 @@ export class Attendee extends AbstractModel {
         this.addArray("animalMeetings", AnimalMeeting, animalMeetings);
     }
 
-    set _meetingSetup(meetingSetup: MeetingSetup) {
-        this.add("meetingSetup", MeetingSetup, meetingSetup);
+    set _meetingSetups(meetingSetups: MeetingSetup[]) {
+        this.add("meetingSetup", MeetingSetup, meetingSetups[0]);
     }
 }
