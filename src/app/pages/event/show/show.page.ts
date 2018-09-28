@@ -9,11 +9,14 @@ import "twix";
 
 import {
     Attendee,
+    Animal,
     EventModel,
     Meeting,
 
     EventService,
 } from "../../../modules";
+
+import { MeetingSetup } from "../../../modules/meeting";
 
 @Component({
     selector: "page-event-show",
@@ -31,6 +34,8 @@ export class EventPage implements OnInit, OnDestroy {
     public waitlist: Observable<Attendee[]>;
 
     public myMeetings: Observable<Meeting[]>;
+
+    public animals: Observable<Animal[]>;
 
     public waitlistFilter: string;
 
@@ -50,8 +55,11 @@ export class EventPage implements OnInit, OnDestroy {
         display: "Walkup"
     }];
 
+    public availableMeetingTimes: Date[];
+
     constructor(private route: ActivatedRoute, private eventService: EventService) {
         this.newAttendee = new Attendee();
+        this.newAttendee.meetingSetup = new MeetingSetup();
     }
 
     ngOnInit(): void {
@@ -61,6 +69,8 @@ export class EventPage implements OnInit, OnDestroy {
             localStorage.setItem("eventId", +params.id + "");
             this.eventModel = this.eventService.getEvent(+params.id).map((event: EventModel) => {
                 if(moment(event.startTime).twix(event.endTime).isCurrent()) {
+                    this.animals = this.eventService.getEventAnimals(+params.id);
+                    this.generateMeetingTimes(event);
 
                     this.waitlist = Observable.combineLatest(
                         this.eventService.getEventAttendance(+params.id)
@@ -93,6 +103,7 @@ export class EventPage implements OnInit, OnDestroy {
             this.eventService.addAttendee(eventModel.id, this.newAttendee)
                 .subscribe((attendee: Attendee) => {
                     this.newAttendee = new Attendee();
+                    this.newAttendee.meetingSetup = new MeetingSetup();
                 });
         });
     }
@@ -107,6 +118,26 @@ export class EventPage implements OnInit, OnDestroy {
 
     updateWaitlistFilter() {
         localStorage.setItem("waitlistFilter", this.waitlistFilter);
+
         this.waitlistFilterObservable.next(this.waitlistFilter);
+    }
+
+    private generateMeetingTimes(event: EventModel): void {
+        if (this.availableMeetingTimes && this.availableMeetingTimes.length) {
+            return;
+        }
+
+        let startTime = moment(event.startTime).startOf("hour");
+        let endTime = moment(event.endTime);
+        this.availableMeetingTimes = [];
+
+        while (startTime.isBefore(moment(event.startTime))) {
+            startTime.add(15, "minutes");
+        }
+
+        while (startTime.isBefore(endTime)) {
+            this.availableMeetingTimes.push(startTime.toDate());
+            startTime.add(15, "minutes");
+        }
     }
 }

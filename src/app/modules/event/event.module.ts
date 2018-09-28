@@ -9,6 +9,7 @@ import { MeetingModule } from "../meeting/meeting.module";
 
 import { EventIsActivePipe } from "./event-is-active.pipe";
 import { FormatEventDatePipe } from "./format-event-date.pipe";
+import { FormatTimePipe } from "./format-time.pipe";
 import { TimeAgoPipe } from "./time-ago.pipe";
 
 import { EventService } from "./event.service";
@@ -20,6 +21,7 @@ import { AuthenticationInterceptor } from "../authentication/authentication.inte
     // Pipes
     EventIsActivePipe,
     FormatEventDatePipe,
+    FormatTimePipe,
     TimeAgoPipe,
   ],
   imports: [
@@ -31,6 +33,7 @@ import { AuthenticationInterceptor } from "../authentication/authentication.inte
   exports: [
     EventIsActivePipe,
     FormatEventDatePipe,
+    FormatTimePipe,
     TimeAgoPipe,
   ],
   providers: [

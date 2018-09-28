@@ -20,7 +20,15 @@
             <a *ngFor="let attendance of waitlist | async"
                 [routerLink]="['meeting', attendance.id]"
                 class="panel-block attendee">
+                <div class="name">
                     {{attendance.firstName}} {{attendance.lastName}}
+                    <div *ngIf="attendance.meetingSetup && attendance.meetingSetup.animal">
+                        Meet with <b>{{attendance.meetingSetup.animal.name}}</b>
+                        <span *ngIf="attendance.meetingSetup.meetingTime">
+                            @ {{attendance.meetingSetup.meetingTime | timeOfDay}}
+                        </span>
+                    </div>
+                </div>
                 <span class="time">
                     {{attendance.startedAt | timeAgo | async}}
                     <div>{{attendanceOptionsDisplay(attendance.approvalStatus)}}</div>
@@ -67,6 +75,27 @@
                     <div class="control">
                         <select name="approvalStatus" [(ngModel)]="newAttendee.approvalStatus" required>
                             <option *ngFor="let option of attendanceOptions" [ngValue]="option.value">{{option.display}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field" *ngIf="newAttendee.approvalStatus == 'has_meeting'">
+                <label class="label">Meeting time</label>
+                <div class="field">
+                    <div class="control">
+                        <select name="meetingTime" [(ngModel)]="newAttendee.meetingSetup.meetingTime" required>
+                            <option *ngFor="let option of availableMeetingTimes" [ngValue]="option">{{option | timeOfDay}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Desired animal</label>
+                <div class="field">
+                    <div class="control">
+                        <select name="animal" [(ngModel)]="newAttendee.meetingSetup.animal">
+                            <option value>No preference</option>
+                            <option *ngFor="let animal of animals | async" [ngValue]="animal">{{animal?.name}}</option>
                         </select>
                     </div>
                 </div>

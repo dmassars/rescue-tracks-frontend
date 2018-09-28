@@ -27,6 +27,7 @@ export class MeetingService {
             ).map(meeting => new Meeting(meeting));
     }
 
+    // Duplicated in event.service
     public getEventAnimals(eventId: number): Observable<Animal[]> {
         let action = "animals";
         let socket: SocketIOClient.Socket = socketIO(`${this.baseUrl}/event`, {

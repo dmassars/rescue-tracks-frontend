@@ -55,7 +55,7 @@ export class EventService {
     public getEventAttendance(eventId: number): Observable<Attendee[]> {
         const transformAttendees = (attendees: Attendee[]) => _.map(attendees, (attendee: any) => new Attendee(
                 _.chain(attendee.__adopter__)
-                 .pick(["id", "firstName", "lastName", "phoneNumber"])
+                 .pick(["id", "firstName", "lastName", "phoneNumber", "__meetingSetups__"])
                  .extend({
                      startedAt: attendee.createdAt,
                      approvalStatus: attendee.approvalStatus
@@ -69,7 +69,7 @@ export class EventService {
         };
 
 
-        let attendance: ReplaySubject<Attendee[]> = this.socket.bindAction("event", "adopters", {event_id: eventId}, updateAttendance)
+        let attendance: ReplaySubject<Attendee[]> = this.socket.bindAction<Attendee[]>("event", "adopters", {event_id: eventId}, updateAttendance)
 
         this.http
             .get<Attendee[]>(`events/${eventId}/attendance`)
@@ -82,6 +82,11 @@ export class EventService {
     }
 
     public addAttendee(eventId: number, attendee: Attendee): Observable<Attendee> {
+
+        if (_.get(attendee, "meetingSetup")) {
+            _.set(attendee, "meetingSetup.animal", {id: attendee.meetingSetup.animal.id});
+        }
+
         return this.http.post<Attendee>(
                 `events/${eventId}/attendance`,
                 { attendee }
@@ -94,6 +99,21 @@ export class EventService {
                 { attendee }
             );
     }
+
+    // Duplicated in meeting service
+    public getEventAnimals(eventId: number): Observable<Animal[]> {
+        let mapAnimals = (animals) => _.map(animals, animal => new Animal(animal));
+
+        let animals: ReplaySubject<Animal[]> = this.socket.bindAction<Animal[]>("event", "animals", {event_id: eventId}, mapAnimals);
+
+        this.http
+            .get<Animal[]>(`events/${eventId}/animals-for-meeting`)
+            .map(mapAnimals)
+            .subscribe(animals.next.bind(animals));
+
+        return animals;
+    }
+
 
     public getMeetingsAtEvent(eventId: number): Observable<Meeting[]> {
         return this.http.get<Meeting[]>(`events/${eventId}/meetings`)
