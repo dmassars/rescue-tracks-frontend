@@ -5,6 +5,20 @@
     justify-content: space-between;
 }
 
+.event-messages {
+    max-width: 30vw;
+
+    .message-container {
+        max-height: 30vh;
+        overflow-y: auto;
+    }
+
+    .event-message {
+        flex-flow: column nowrap;
+        align-items: flex-start;
+    }
+}
+
 .applicants {
     .panel-heading {
         display: flex;
