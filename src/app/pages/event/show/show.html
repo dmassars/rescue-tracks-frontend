@@ -39,15 +39,48 @@
             </div>
         </div>
     </div>
-    <div class="panel" *ngIf="(event | eventIsActive) && (myMeetings | async)?.length > 0">
-        <h2 class="panel-heading">My current meetings</h2>
-        <div class="meeting panel-block" *ngFor="let meeting of myMeetings | async">
-            <a *ngIf="meeting?.activeAnimalMeeting" [routerLink]="['/meetings', meeting?.id, 'end']">
-                {{meeting?.attendee.firstName}} &amp; {{meeting?.activeAnimalMeeting.animal.name}} <i><small>{{meeting?.activeAnimalMeeting.startedAt | timeAgo | async}}</small></i>
-            </a>
-            <a *ngIf="!meeting?.activeAnimalMeeting" [routerLink]="['/meetings', meeting?.id]">
-                {{meeting?.attendee.firstName}} (not with animal)
-            </a>
+    <div *ngIf="event | eventIsActive">
+        <div class="panel" *ngIf="(myMeetings | async)?.length > 0">
+            <h2 class="panel-heading">My current meetings</h2>
+            <div class="meeting panel-block" *ngFor="let meeting of myMeetings | async">
+                <a *ngIf="meeting?.activeAnimalMeeting" [routerLink]="['/meetings', meeting?.id, 'end']">
+                    {{meeting?.attendee.firstName}} &amp; {{meeting?.activeAnimalMeeting.animal.name}} <i><small>{{meeting?.activeAnimalMeeting.startedAt | timeAgo | async}}</small></i>
+                </a>
+                <a *ngIf="!meeting?.activeAnimalMeeting" [routerLink]="['/meetings', meeting?.id]">
+                    {{meeting?.attendee.firstName}} (not with animal)
+                </a>
+            </div>
+        </div>
+        <div class="panel event-messages">
+            <h2 class="panel-heading">Messages</h2>
+            <div class="message-container" #messageContainer>
+                <div class="panel-block event-message" *ngFor="let message of messages | async">
+                    <small>
+                        <b>
+                            {{message?.createdAt | timeOfDay}}
+                        </b>
+                        -
+                        <i>
+                            {{message?.sender.firstName}} {{message?.sender.lastName[0]}}
+                        </i>
+                    </small>
+                    <div>
+                        {{message?.message}}
+                    </div>
+                </div>
+            </div>
+            <div class="panel-block">
+                <div class="field has-addons">
+                    <p class="control is-expanded">
+                        <input type="text" name="newMessage" [(ngModel)]="newMessage" placeholder="Send a new message..." />
+                    </p>
+                    <p class="control">
+                        <button class="button is-primary" type="submit" (click)="sendMessage()">
+                            Send message
+                        </button>
+                    </p>
+                </div>
+            </div>
         </div>
     </div>
     <div *ngIf="event | eventIsActive">

@@ -15,6 +15,7 @@ import { SocketService } from "../api/socket.service";
 import { EventModel } from "./event.model";
 import { Attendee } from "./attendee.model";
 import { Meeting } from "../meeting/meeting.model";
+import { Message } from "./message.model";
 import { Animal } from "../api/animal";
 
 @Injectable()
@@ -114,6 +115,25 @@ export class EventService {
         return animals;
     }
 
+    public sendMessage(eventId: number, message: String): Observable<void> {
+        return this.http.post<void>(
+            `events/${eventId}/messages`,
+            { message }
+        );
+    }
+
+    public getEventMessages(eventId: number): Observable<Message[]> {
+        let mapMessages = (messages) => _.map(messages, message => new Message(message));
+
+        let messages = this.socket.bindAction<Message[]>("event", "messages", {event_id: eventId}, mapMessages);
+
+        this.http
+            .get<Animal[]>(`events/${eventId}/messages`)
+            .map(mapMessages)
+            .subscribe(messages.next.bind(messages));
+
+        return messages;
+    }
 
     public getMeetingsAtEvent(eventId: number): Observable<Meeting[]> {
         return this.http.get<Meeting[]>(`events/${eventId}/meetings`)

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from "@angular/core";
+import { Component, Input, OnInit, OnDestroy, ViewChild, ElementRef } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 
 import { Observable, Subscription, ReplaySubject } from "rxjs";
@@ -12,6 +12,7 @@ import {
     Animal,
     EventModel,
     Meeting,
+    Message,
 
     EventService,
 } from "../../../modules";
@@ -25,15 +26,22 @@ import { MeetingSetup } from "../../../modules/meeting";
 })
 export class EventPage implements OnInit, OnDestroy {
 
+    @ViewChild('messageContainer')
+    messageContainer: ElementRef;
+
     private paramsSub: Subscription;
 
     public eventModel: Observable<EventModel>;
 
     public newAttendee: Attendee;
 
+    public newMessage: String;
+
     public waitlist: Observable<Attendee[]>;
 
     public myMeetings: Observable<Meeting[]>;
+
+    public messages: Observable<Message[]>;
 
     public animals: Observable<Animal[]>;
 
@@ -60,6 +68,7 @@ export class EventPage implements OnInit, OnDestroy {
     constructor(private route: ActivatedRoute, private eventService: EventService) {
         this.newAttendee = new Attendee();
         this.newAttendee.meetingSetup = new MeetingSetup();
+        this.newMessage = "";
     }
 
     ngOnInit(): void {
@@ -84,6 +93,7 @@ export class EventPage implements OnInit, OnDestroy {
                         }
                     });
                     this.myMeetings = this.eventService.getMeetingsAtEvent(+params.id);
+                    this.subscribeToMessages(+params.id);
                 }
 
                 return event;
@@ -120,6 +130,27 @@ export class EventPage implements OnInit, OnDestroy {
         localStorage.setItem("waitlistFilter", this.waitlistFilter);
 
         this.waitlistFilterObservable.next(this.waitlistFilter);
+    }
+
+    sendMessage() {
+        if (this.newMessage.trim().length) {
+            let eventId = +localStorage.getItem("eventId");
+            let sub = this.eventService.sendMessage(eventId as any, this.newMessage).subscribe(() => {
+                this.newMessage = "";
+                this.subscribeToMessages(eventId);
+                sub.unsubscribe();
+            });
+        }
+    }
+
+    private subscribeToMessages(id) {
+        this.messages = this.eventService.getEventMessages(id);
+
+        this.messages.subscribe(() => {
+            setTimeout(() => {
+                this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+            });
+        });
     }
 
     private generateMeetingTimes(event: EventModel): void {
