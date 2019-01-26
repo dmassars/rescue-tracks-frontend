@@ -83,7 +83,14 @@ export class EventPage implements OnInit, OnDestroy {
 
                     this.waitlist = Observable.combineLatest(
                         this.eventService.getEventAttendance(+params.id)
-                                            .map((attendances) => _.orderBy(attendances, "startedAt")),
+                                            .map((attendances) => {
+                                                let groupings = _.groupBy(attendances, "approvalStatus");
+
+                                                return _.chain(this.attendanceOptions)
+                                                        .map((option) => _.orderBy(groupings[option.value], "startedAt"))
+                                                        .flatten()
+                                                        .value()
+                                            }),
                         this.waitlistFilterObservable
                     ).map(([attendances, filter]) => {
                         if (this.waitlistFilter == "all") {

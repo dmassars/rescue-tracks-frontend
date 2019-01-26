@@ -112,7 +112,7 @@
                     </div>
                 </div>
             </div>
-            <div class="field" *ngIf="newAttendee.approvalStatus == 'has_meeting'">
+            <div class="field" *ngIf="newAttendee.approvalStatus == 'has_meeting' || newAttendee.approvalStatus == 'approved'">
                 <label class="label">Meeting time</label>
                 <div class="field">
                     <div class="control">
