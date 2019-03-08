@@ -1,7 +1,7 @@
 import { AbstractModel } from "../../abstract.model";
 
+import { AnimalMeeting } from "../meeting/animal-meeting.model";
 import {
-    AnimalMeeting,
     MeetingSetup,
 } from "../meeting";
 

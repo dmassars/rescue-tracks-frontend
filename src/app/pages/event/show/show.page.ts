@@ -53,9 +53,9 @@ export class EventPage implements OnInit, OnDestroy {
         value: "has_meeting",
         display: "Approved with meeting",
     },{
-        value: "approved",
-        display: "Approved",
-    },{
+    //     value: "approved",
+    //     display: "Approved",
+    // },{
        value: "online_application",
        display: "Application submitted online",
     },{

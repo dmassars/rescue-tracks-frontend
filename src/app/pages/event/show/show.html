@@ -127,7 +127,7 @@
                 <div class="field">
                     <div class="control">
                         <select name="animal" [(ngModel)]="newAttendee.meetingSetup.animal">
-                            <option value>No preference</option>
+                            <option value>No preference/Walkup</option>
                             <option *ngFor="let animal of animals | async" [ngValue]="animal">{{animal?.name}}</option>
                         </select>
                     </div>
