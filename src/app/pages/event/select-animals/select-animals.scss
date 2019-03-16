@@ -1,6 +1,14 @@
+@import '~@swimlane/ngx-datatable/release/index.css';
+@import '~@swimlane/ngx-datatable/release/themes/material.css';
+@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+
 .animals {
     display: flex;
     flex-flow: row wrap;
+}
+
+[ng-reflect-is-selected="true"]{
+    background-color: #90ee9080;
 }
 
 input[type=checkbox] {

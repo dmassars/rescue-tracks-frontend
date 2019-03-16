@@ -1,11 +1,28 @@
+<ng-template #animalThumbnail let-row="row" let-value="value">
+    <img width="50" [src]="value" /> 
+</ng-template>
+
+
+
 <div class="section">
-    <form (submit)="submitAnimals()">
-        <div class="animals">
-            <div *ngFor="let animal of animals | async;">
-                <input type="checkbox" name="selectedAnimals[]" id="animal_{{animal.externalId}}" [value]="animal.externalId" [checked]="selectedAnimals[animal.externalId]" (change)="toggle(animal.externalId)" />
-                <label for="animal_{{animal.externalId}}">{{animal.name}}</label>
-            </div>
-        </div>
-        <button type="submit" class="button is-success" [disabled]="!hasSelectedAnimals()">Save</button>
-    </form>
+
+        <ngx-datatable class="material" [selected]="animalsSelected" [rowHeight]="'auto'" [rows]="animalsRows" [columns]="animalsColumns"
+        [selectionType]="'multiple'"
+
+          >
+            </ngx-datatable>
+
+  <form (submit)="submitAnimals()">
+    <div class="animals">
+
+      <div *ngFor="let animal of animals | async;">
+        <input type="checkbox" name="selectedAnimals[]" id="animal_{{animal.externalId}}" [value]="animal.externalId"
+          [checked]="selectedAnimals[animal.externalId]" (change)="toggle(animal.externalId)" />
+        <label for="animal_{{animal.externalId}}">{{animal.name}}</label>
+      </div>
+    </div>
+    <button type="submit" class="button is-success" [disabled]="!hasSelectedAnimals()">Save</button>
+  </form>
+
+
 </div>
