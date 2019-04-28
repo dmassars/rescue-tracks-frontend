@@ -26,7 +26,7 @@ export class MeetingPage implements OnInit, OnDestroy {
 
     public counselorMeeting: ReplaySubject<Meeting>;
     public animals: Observable<Animal[]>;
-
+    
     constructor(
         private route: ActivatedRoute,
         private router: Router,

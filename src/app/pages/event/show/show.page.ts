@@ -73,7 +73,7 @@ export class EventPage implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.waitlistFilterObservable = new ReplaySubject<string>(1);
-
+        
         this.paramsSub = this.route.params.subscribe(params => {
             localStorage.setItem("eventId", +params.id + "");
             this.eventModel = this.eventService.getEvent(+params.id).map((event: EventModel) => {

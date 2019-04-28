@@ -26,7 +26,7 @@ export class StartEventPage {
     public setupEvent() {
         this.eventService.setupEvent(this.date, this.startTime, this.endTime)
             .subscribe((event: EventModel) =>
-                this.router.navigate(["/events", event.id, "animals"])
+                this.router.navigate(["/events", event.id, "animals","update"])
             );
     }
 }

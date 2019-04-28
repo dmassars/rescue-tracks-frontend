@@ -14,6 +14,9 @@ const routes: Routes = [
     {path: "start", component: StartEventPage},
     {path: ":id/meeting/:attendeeId", component: StartMeetingPage},
     {path: ":id/animals", component: SelectAnimalsPage},
+    {path: ":id/animals/:action", component: SelectAnimalsPage},
+    {path: ":id/animals/:action", component: SelectAnimalsPage},
+    {path: ":id/animals/meeting/:meetingId", component: SelectAnimalsPage},
     {path: ":id", component: EventPage},
     {path: "**", redirectTo: ""},
 ];

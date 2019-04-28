@@ -31,3 +31,55 @@
 .panel-tabs {
     justify-content: space-evenly;
 }
+
+
+.animal-list {
+    td.ng2-smart-action-multiple-select {
+        cursor: pointer;
+    }
+    .selected {
+        background-color: #90ee9080 !important;
+    }
+}
+
+.ngx-datatable {
+        &.selectable {
+            .datatable-body-row {
+                cursor: pointer;
+                &.active {
+                    background-color: #90ee9080;
+                }
+            }
+        }
+
+        .datatable-body-row {
+            &.active {
+                background-color: #90ee9080;
+            }
+        }
+}
+
+.animal-list {
+    font-size: .9em !important;
+    font-weight: 400 !important;
+
+    .ui-multiselect {
+        width: 100% !important;
+    }
+}
+
+.view-mode .ui-table .ui-table-tbody > tr {
+    &.animal-adopted {
+        background-color: #f4433626 !important; //#89f1ad26 !important;
+        color: black !important;
+    }
+    &.animal-in-meeting {
+        background-color: #ffdd5726 !important;
+        color: black !important;
+    }
+    &.animal-available {
+        background-color: #ffffff !important;
+        color: black !important;
+    }
+
+}

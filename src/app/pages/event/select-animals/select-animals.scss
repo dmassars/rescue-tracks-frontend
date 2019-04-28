@@ -1,14 +1,6 @@
-@import '~@swimlane/ngx-datatable/release/index.css';
-@import '~@swimlane/ngx-datatable/release/themes/material.css';
-@import '~@swimlane/ngx-datatable/release/assets/icons.css';
-
 .animals {
     display: flex;
     flex-flow: row wrap;
-}
-
-[ng-reflect-is-selected="true"]{
-    background-color: #90ee9080;
 }
 
 input[type=checkbox] {
@@ -29,4 +21,26 @@ input[type=checkbox] {
         background: green;
         color: white;
     }
+}
+
+.animal-list {
+    font-size: .9em !important;
+    font-weight: 400 !important;
+
+    .ui-multiselect {
+        width: 100% !important;
+    }
+
+    .ui-table-thead>tr>th {
+        font-weight: 400 !important;
+    }
+    
+    .ui-table-tbody>tr>td>span {
+        overflow-wrap: break-word;
+    }
+}
+
+
+form[autocomplete="off"] input[type="text"] {
+    background-position: 150% 50% !important;
 }

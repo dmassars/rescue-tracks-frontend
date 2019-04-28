@@ -1,28 +1,114 @@
-<ng-template #animalThumbnail let-row="row" let-value="value">
-    <img width="50" [src]="value" /> 
-</ng-template>
+<div style="margin-bottom: 10px">
+    <button pButton type="button" label="Back to Event"  (click)="toEvent()" icon="fa fa-fw fa-calendar-o" ></button>
+    <button pButton type="button" label="Save Animals" (click)="submitAnimals()" style="float:right" class="ui-button-success" *ngIf="config.canSelect" [disabled]="saveDisabled" icon="fa fa-fw fa-check" ></button>
+</div>
 
 
+<div class="-animals">
 
-<div class="section">
+  <p-table #dt class="animal-list" [columns]="config.selectedColumns" [value]="animalsRows" sortMode="multiple" dataKey="id"
+    [paginator]="true" [rows]="100" [autoLayout]="false" [(selection)]="animalsSelected" selectionMode="{{config.canSelect ? 'multiple' : 'none'}}"
+    (onRowSelect)="onRowSelect($event)" (onRowUnselect)="onRowSelect($event)"
+    [ngClass]="config.canSelect ? 'edit-mode' : 'view-mode'"
+    >
 
-        <ngx-datatable class="material" [selected]="animalsSelected" [rowHeight]="'auto'" [rows]="animalsRows" [columns]="animalsColumns"
-        [selectionType]="'multiple'"
-
-          >
-            </ngx-datatable>
-
-  <form (submit)="submitAnimals()">
-    <div class="animals">
-
-      <div *ngFor="let animal of animals | async;">
-        <input type="checkbox" name="selectedAnimals[]" id="animal_{{animal.externalId}}" [value]="animal.externalId"
-          [checked]="selectedAnimals[animal.externalId]" (change)="toggle(animal.externalId)" />
-        <label for="animal_{{animal.externalId}}">{{animal.name}}</label>
+    <ng-template pTemplate="caption">
+      <div style="text-align:right">
+        <p-multiSelect [options]="config.columns" [(ngModel)]="config.selectedColumns" optionLabel="header"
+          selectedItemsLabel="{0} columns selected" [style]="{maxWidth: '300px'}" defaultLabel="Choose Columns"></p-multiSelect>
       </div>
-    </div>
-    <button type="submit" class="button is-success" [disabled]="!hasSelectedAnimals()">Save</button>
-  </form>
+    </ng-template>
 
+    <ng-template pTemplate="header" let-columns>
+      <!-- HEADER ROW -->
+      <tr>
+
+        <th *ngIf="config.canSelect" style="width: 2.25em">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        
+        <th style="width: 2.25em"></th>
+
+        <th *ngFor="let col of columns" [pSortableColumn]="col.field" [ngStyle]="col.style">
+          {{col.header}}
+          <p-sortIcon *ngIf="col.field!=='CoverPhoto'" [field]="col.field"></p-sortIcon>
+        </th>
+      </tr>
+      <!-- FILTER ROW -->
+      <tr>
+        <th *ngIf="config.canSelect"></th>
+        <th></th>
+        <th *ngFor="let col of columns">
+          <input *ngIf="col.filter=='search'" pInputText style="width: 100%" type="text" (input)="dt.filter($event.target.value, col.field, col.filterMatchMode)">
+          <p-dropdown *ngIf="col.filter=='dropdown'" [options]="config.filters[col.field]" [style]="{'width':'100%'}"
+            (onChange)="dt.filter($event.value, col.field, 'equals')"></p-dropdown>
+          <p-multiSelect *ngIf="col.filter=='multiselect'" [options]="config.filters[col.field]" defaultLabel="All"
+            (onChange)="dt.filter($event.value, col.field, 'in')"></p-multiSelect>
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rowData let-columns="columns" let-rowIndex="rowIndex" let-expanded="expanded">
+      <!-- DATA ROWS -->
+      <tr [pSelectableRow]="rowData" [pSelectableRowIndex]="rowIndex" [ngClass]="rowData._styleClass">
+
+        <td *ngIf="config.canSelect">
+          <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+        </td>
+
+        <td>
+          <span [pRowToggler]="rowData">
+              <i [ngClass]="expanded ? 'fa fa-fw fa-chevron-circle-down' : 'fa fa-fw fa-chevron-circle-right'"></i>
+          </span>
+      </td>
+
+        <td *ngFor="let col of columns" [ngSwitch]="col.field">
+          <img *ngSwitchCase="'CoverPhoto'" width="55" [src]="rowData.CoverPhoto" />
+          <span *ngSwitchDefault style="overflow-wrap: break-word;">{{rowData[col.field]}}</span>
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+      <tr>
+          <td [attr.colspan]="columns.length + 1">
+              <div class="ui-g ui-fluid" style="font-size:16px;padding:20px">
+                  <div class="ui-g-12 ui-md-3" style="text-align:center">
+                      <img [attr.alt]="rowData.Name" src="{{rowData.CoverPhoto}}">
+                  </div>
+                  <div class="ui-g-12 ui-md-9">
+                      <div class="ui-g">
+                          <div class="ui-g-12">
+                              {{rowData.Description}}
+                          </div>
+                          <div class="ui-g-12">
+                            <div class="ui-g-2"> <b>Can Walk:</b> 
+                              <i *ngIf="rowData.canWalk" style="color: green; font-size: x-large" class="fa fa-check-circle" aria-hidden="true"></i>
+                              <i *ngIf="!rowData.canWalk" style="color: red; font-size: x-large" class="fa fa-times-circle" aria-hidden="true"></i>
+                            </div>
+                            <div class="ui-g-2"> <b>Dogs:</b> 
+                              <i *ngIf="rowData.Attributes.dogs" style="color: green; font-size: x-large" class="fa fa-check-circle" aria-hidden="true"></i>
+                              <i *ngIf="!rowData.Attributes.dogs" style="color: red; font-size: x-large" class="fa fa-times-circle" aria-hidden="true"></i>
+                            </div>
+                            <div class="ui-g-2"> <b>Cats:</b> 
+                              <i *ngIf="rowData.Attributes.cats" style="color: green; font-size: x-large" class="fa fa-check-circle" aria-hidden="true"></i>
+                              <i *ngIf="!rowData.Attributes.cats" style="color: red; font-size: x-large" class="fa fa-times-circle" aria-hidden="true"></i>
+                            </div>
+                            <div class="ui-g-2"> <b>Kids:</b> 
+                              <i *ngIf="rowData.Attributes.kids" style="color: green; font-size: x-large" class="fa fa-check-circle" aria-hidden="true"></i>
+                              <i *ngIf="!rowData.Attributes.kids" style="color: red; font-size: x-large" class="fa fa-times-circle" aria-hidden="true"></i>
+                            </div>
+                          </div>
+                          <ul class="ui-g-12">
+                            <li *ngFor="let att of rowData.Attributes.other">{{att.AttributeName}}</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </td>
+      </tr>
+  </ng-template>
+
+  </p-table>
 
 </div>

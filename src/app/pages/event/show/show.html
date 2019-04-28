@@ -1,11 +1,15 @@
-<div class="event" *ngIf="eventModel | async; let event; else loading">
-    <div>
-        <h2 class="title">Event #{{ event?.id }}</h2>
-        <h3 class="subtitle">({{ event | formatEventDate }})</h3>
-        <a routerLink="animals">
-            <span *ngIf="event.animals.length > 0 ; else addAnimals">{{ event.animals.length }} animals</span>
-            <ng-template #addAnimals>Add animals</ng-template>
-        </a>
+<div class="event p-grid" *ngIf="eventModel | async; let event; else loading">
+        <div class="p-col-6">
+            <h3 class="title">Event #{{ event?.id }}</h3>
+            <h4 class="subtitle">({{ event | formatEventDate }})</h4>
+        </div>
+        <div class="p-col-6">
+            <a routerLink="animals">
+                <span *ngIf="event.animals.length > 0 ; else addAnimals">{{ event.animals.length }} animals</span>
+                <ng-template #addAnimals>Add animals</ng-template>
+            </a>
+        </div>
+    <div class="p-col-4">
         <div class="panel applicants" *ngIf="event | eventIsActive">
             <h3 class="panel-heading">
                 <span>Applicants</span>
@@ -39,7 +43,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="event | eventIsActive">
+    <div class="p-col-4" *ngIf="event | eventIsActive">
         <div class="panel" *ngIf="(myMeetings | async)?.length > 0">
             <h2 class="panel-heading">My current meetings</h2>
             <div class="meeting panel-block" *ngFor="let meeting of myMeetings | async">
@@ -83,7 +87,7 @@
             </div>
         </div>
     </div>
-    <div *ngIf="event | eventIsActive">
+    <div class="p-col-4" *ngIf="event | eventIsActive">
         <form class="box" (ngSubmit)="addToWaitlist()" #waitlistForm="ngForm">
             <h3>Add person to waitlist</h3>
             <div class="field">

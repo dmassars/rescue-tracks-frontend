@@ -17,7 +17,7 @@ import { MeetingRoutes } from "./meeting.routes";
   declarations: [
     // Pages
     MeetingPage,
-
+    
     // Modals
     EndPage,
     MeetWithPage,

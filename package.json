@@ -12,6 +12,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^5.1.2",
     "@angular/common": "^5.1.2",
     "@angular/compiler": "^5.1.2",
     "@angular/core": "^5.1.2",
@@ -23,8 +24,13 @@
     "@swimlane/ngx-datatable": "^14.0.0",
     "@types/socket.io-client": "^1.4.32",
     "core-js": "^2.5.3",
+    "font-awesome": "^4.7.0",
     "moment": "^2.20.1",
+    "ng2-completer": "^2.0.8",
     "node-sass": "^4.9.3",
+    "primeflex": "^1.0.0-rc.1",
+    "primeicons": "^1.0.0",
+    "primeng": "^5.2.7",
     "promise-polyfill": "^7.0.0",
     "rxjs": "^5.5.6",
     "socket.io-client": "^2.1.1",
@@ -49,6 +55,6 @@
     "protractor": "^5.4.0",
     "ts-node": "^4.1.0",
     "tslint": "~4.5.0",
-    "typescript": "^2.6.2"
+    "typescript": "2.6.2"
   }
 }
